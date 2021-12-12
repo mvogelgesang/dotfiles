@@ -14,4 +14,6 @@ nvm install-latest-npm
 
 npm install -g autoprefixer postcss-cli
 npm install -g markdown-link-check
+npm install -g prettier
 npm install -g standard
+npm install -g yarn

@@ -13,13 +13,13 @@ After installing your fresh OS, [create any SSH keys](https://docs.github.com/en
 If not generating new keys, place the ones you need in `.ssh/`. Remember to run `ssh-add` as well as `chmod 600 <key_name>`. Then clone this repository:
 
 ```sh
-git clone git@github.com:victoriadrake/dotfiles.git
+git clone git@github.com:mvogelgesang/dotfiles.git
 
 # Or use HTTPS
-git clone https://github.com/victoriadrake/dotfiles.git
+git clone https://github.com/mvogelgesang/dotfiles.git
 ```
 
-You may optionally like to pass the `--depth` argument to clone only a few of the [most recent commits](https://github.com/victoriadrake/dotfiles/commits/master).
+You may optionally like to pass the `--depth` argument to clone only a few of the [most recent commits](https://github.com/mvogelgesang/dotfiles/commits/master).
 
 Close Firefox if it's open, then run the installation script.
 
@@ -28,12 +28,7 @@ cd dotfiles/scripts/
 ./install.sh
 ```
 
-If you like, set up [powerline-shell](https://github.com/b-ryan/powerline-shell):
 
-```sh
-cd powerline-shell/
-sudo python3 setup.py install
-```
 
 Uncomment the relevant lines in `.bashrc`, then restart your terminal to see changes, or run:
 
@@ -56,21 +51,6 @@ Use the `firewood` Bash alias (see `.bashrc`) to collect remote branches.
 
 See [How to write Bash one-liners for cloning and managing GitHub and GitLab repositories](https://victoria.dev/blog/how-to-write-bash-one-liners-for-cloning-and-managing-github-and-gitlab-repositories/) for more.
 
-### Terminal theme
-
-There are plenty of themes for Gnome terminal at [Mayccoll/Gogh](https://github.com/Mayccoll/Gogh).
-
-Print a 256-color test pattern in your terminal:
-
-```sh
-for i in {0..255} ; do
-    printf "\x1b[48;5;%sm%3d\e[0m " "$i" "$i"
-    if (( i == 15 )) || (( i > 15 )) && (( (i-15) % 6 == 0 )); then
-        printf "\n";
-    fi
-done
-```
-
 ### Saving and loading configuration settings
 
 Optionally, load `settings.dconf` with:
@@ -82,7 +62,7 @@ dconf load /org/gnome/ < .config/dconf/settings.dconf
 Back up new settings with:
 
 ```sh
-dconf dump /org/gnome/ > .config/dconf/settings.dconf
+dconf dump /org/gnoe/ > .config/dconf/settings.dconf
 ```
 
 Run `man dconf` on your machine for more.

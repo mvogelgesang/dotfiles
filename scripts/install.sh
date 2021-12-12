@@ -19,22 +19,14 @@ function install {
 
 # Basics
 install awscli
-install chrome-gnome-shell
 install curl
 install exfat-utils
 install file
 install git
-install htop
 install nmap
-install openvpn
 install tree
 install vim
 install wget
-
-# Image processing
-install gimp
-install jpegoptim
-install optipng
 
 # Run all scripts in programs/
 for f in programs/*.sh; do bash "$f" -H; done

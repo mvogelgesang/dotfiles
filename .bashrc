@@ -55,31 +55,10 @@ function getghcli () {
     gh --version
 }
 
-# Hugo install or upgrade
-function gethugo () {
-    wget -q -P tmp/ https://github.com/gohugoio/hugo/releases/download/v"$@"/hugo_extended_"$@"_Linux-64bit.tar.gz
-    tar xf tmp/hugo_extended_"$@"_Linux-64bit.tar.gz -C tmp/
-    sudo mv -f tmp/hugo /usr/local/bin/
-    rm -rf tmp/
-    hugo version
-}
-
-# Hugo site from exampleSite in themes/
-function hugotheme () {
-    HUGO_THEME="$1" hugo "${@:2}" --themesDir ../.. -v
-}
-
 # Markdown link check in a folder, recursive
 function mlc () {
     find $1 -name \*.md -exec markdown-link-check -p {} \;
 }
-
-# Go
-export PATH=$PATH:/usr/local/bin:/usr/local/go/bin:~/.local/bin:$GOPATH/bin
-export GOPATH=~/go
-
-# Vim for life
-export EDITOR=/usr/bin/vim
 
 # Bash completion
 source ~/.git-completion.bash
@@ -157,3 +136,10 @@ export NVM_DIR="$HOME/.nvm"
 # Install Ruby Gems to ~/gems
 export GEM_HOME="$HOME/gems"
 export PATH="$HOME/gems/bin:$PATH"
+
+
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
+source /home/pi/.rvm/scripts/rvm
+
+# Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
+export PATH="$PATH:$HOME/.rvm/bin"

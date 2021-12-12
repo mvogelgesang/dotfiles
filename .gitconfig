@@ -1,3 +1,7 @@
+[user]
+	email = movogelgesang@gmail.com
+	name = mvogelgesang
+
 [alias]
     # Adapted from https://blog.jez.io/cli-code-review/
     # List files which have changed since BASE
@@ -11,12 +15,3 @@
     # https://github.com/jez/git-heatmap/blob/master/git-heatmap
     heatmap = git-heatmap
    
-    # Open all files changed since BASE in Vim tabs
-    # Then, run fugitive's :Gdiff in each tab, and finally
-    # tell vim-gitgutter to show +/- for changes since BASE
-    review = !vim -p $(git files) +\"tabdo Gdiff $BASE\" +\"let g:gitgutter_diff_base = '$BASE'\"
-
-    # Same as the above, except specify names of files as arguments,
-    # instead of opening all files:
-    # git reviewone foo.js bar.js
-    reviewone = !vim -p +\"tabdo Gdiff $BASE\" +\"let g:gitgutter_diff_base = '$BASE'\"
