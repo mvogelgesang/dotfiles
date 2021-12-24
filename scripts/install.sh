@@ -17,7 +17,7 @@ function install {
   fi
 }
 
-# Basics
+# Basics - calls the function above which checks if the programs are installd or not
 install awscli
 install curl
 install exfat-utils
@@ -27,9 +27,18 @@ install nmap
 install tree
 install vim
 install wget
+install libnss3-tools
+
 
 # Run all scripts in programs/
 for f in programs/*.sh; do bash "$f" -H; done
+
+# Setup localhost https cert
+wget https://github.com/FiloSottile/mkcert/releases/download/v1.4.3/mkcert-v1.4.3-linux-amd64
+sudo mv mkcert-v1.4.3-linux-amd64 /usr/bin/mkcert
+sudo chmod +x /usr/bin/mkcert
+mkcert -install
+mkcert localhost
 
 # Get all upgrades
 sudo apt upgrade -y
