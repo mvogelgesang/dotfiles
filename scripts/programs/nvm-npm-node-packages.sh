@@ -18,3 +18,4 @@ npm install -g prettier
 npm install -g standard
 npm install -g yarn
 npm install -g sfdx-cli
+npm install -g typescrpt
