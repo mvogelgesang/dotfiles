@@ -43,3 +43,8 @@ mkcert localhost
 # Get all upgrades
 sudo apt upgrade -y
 sudo apt autoremove -y
+
+
+# git config
+git config --global init.defaultBranch main  
+git config --global user.name "mvogelgesang"
