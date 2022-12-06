@@ -5,22 +5,24 @@
 
 brew update
 
-brew install --cask \
-  dropbox \
-  keepassx \ 
-  google-chrome  \
-  tor \
-  visual-studio-code \
-  docker \
-  rectangle \
-  discord \
-  vlc \
-  imageoptim \
-  wget \
-  git \
-  nvm \
-  pnpm \
-  commitzen \
+function brewInstall {
+  which $1 &> /dev/null
+
+  if [ $? -ne 0 ]; then
+    echo "Installing: ${1}..."
+    brew install $2 $1
+  else
+    echo "Already installed: ${1}"
+  fi
+}
+
+brewInstall visual-studio-code --cask
+brewInstall docker --cask
+brewInstall rectangle --cask
+brewInstall discord --cask
+brewInstall vlc --cask
+brewInstall android-studio --cask
+brewInstall nvm
 
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
@@ -31,34 +33,25 @@ brew install starship
 
 ## SSH
 mkdir ~/.ssh
-
 cd ~/.ssh
 
-ssh-keygen -t ed25519 -C "github"
+ssh-keygen -t ed25519 
 # Confirm whether passphrase was used properly by accessing private key:
-ssh-keygen -y -f gitHub
+ssh-keygen -y -f id_ed25519
 # in case the file is not there yet
 touch ~/.ssh/config
 echo "Host *
   AddKeysToAgent yes
   UseKeychain yes
-  IdentityFile ~/.ssh/github" > ~/.ssh/config
+  IdentityFile ~/.ssh/id_ed25519" > ~/.ssh/config
 
-ssh-add --apple-use-keychain ~/.ssh/github
+ssh-add --apple-use-keychain ~/.ssh/id_ed25519
 
 # add the public key to github via the GH cli
 # copy public key and add it to https://github.com/
-cat ~/.ssh/id_rsa.pub | pbcopy
+cat ~/.ssh/id_ed25519.pub | pbcopy
 
-# or use GitHub's CLI
-gh auth login
-# for the first login I think the SSH key gets added
-# without the next command, but if not:
-
-gh ssh-key add ~/.ssh/id_rsa.pub -t github
-
-# NVM
-echo "source $(brew --prefix nvm)/nvm.sh" >> ~/.zshrc
+gh ssh-key add ~/.ssh/id_ed25519.pub -t github
 
 source ~/.zshrc
 
@@ -68,10 +61,11 @@ node -v && npm -v
 
 npm install -g npm@latest
 
-npm set init.author.name "Mark Vogelgesang"
-npm set init.author.email "movogelgesang@gmail.com"
-npm set init.author.url "mvogelgesang.com"
-npm add user
+# needs work
+# npm config set --init-author-name "Mark Vogelgesang"
+# npm config set --init-author-email "movogelgesang@gmail.com"
+# npm config set --init-author-url "htttps://mvogelgesang.com"
+# npm add user
 
 npm install -g yarn
 yarn -v
