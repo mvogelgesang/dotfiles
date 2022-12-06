@@ -1,6 +1,7 @@
 # If you come from bash you might have to change your $PATH.
 export PATH=$HOME/bin:/usr/local/bin:$PATH
 source ~/.bashrc
+export ANDROID_HOME=/usr/local/android-studio
 # Path to your oh-my-zsh installation.
 export ZSH="/home/pi/.oh-my-zsh"
 
@@ -72,6 +73,7 @@ ZSH_THEME="robbyrussell"
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(git)
 
+source ~/.bashrc
 source $ZSH/oh-my-zsh.sh
 
 # User configuration

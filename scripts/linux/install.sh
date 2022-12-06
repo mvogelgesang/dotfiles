@@ -28,6 +28,9 @@ install tree
 install vim
 install wget
 install libnss3-tools
+# korean language pack
+install ibus-hangul
+
 
 
 # Run all scripts in programs/
@@ -44,7 +47,4 @@ mkcert localhost
 sudo apt upgrade -y
 sudo apt autoremove -y
 
-
-# git config
-git config --global init.defaultBranch main  
-git config --global user.name "mvogelgesang"
+bash ../shared.sh
