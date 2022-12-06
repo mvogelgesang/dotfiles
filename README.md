@@ -1,4 +1,8 @@
-# Dotfiles for Pop!_OS
+# Dotfiles
+
+This was originally forked from Victoria Drake's [dotfiles](https://github.com/victoriadrake/dotfiles) repo.
+
+## Linux
 
 My preferred starting configuration. Currently using [Pop!_OS 20.10](https://pop.system76.com/).
 
@@ -76,3 +80,11 @@ See the Makefile in this repository for some helpful command aliases. Read about
 - GNOME Tweaks
 - [Emoji Selector](https://extensions.gnome.org/extension/1162/emoji-selector/) ❤️✨🦄
 - [Clipboard Indicator](https://extensions.gnome.org/extension/779/clipboard-indicator/)
+
+## Mac
+
+The [Mac setup web development](https://www.robinwieruch.de/mac-setup-web-development/) guide from Robin Wieruch provided the foundation for these scripts.
+
+### Manual Actions
+
+### Scripted Actions

@@ -22,3 +22,6 @@ install dsznajder.es7-react-js-snippets
 install esbenp.prettier-vscode
 install rebornix.ruby
 install wingrunr21.vscode-ruby
+install msjsdiag.vscode-react-native
+install EQuimper.react-native-react-redux
+install PKief.material-icon-theme
