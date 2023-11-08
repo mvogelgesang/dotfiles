@@ -24,14 +24,11 @@ install exfat-utils
 install file
 install git
 install nmap
+install rpi-imager
 install tree
 install vim
 install wget
 install libnss3-tools
-# korean language pack
-install ibus-hangul
-
-
 
 # Run all scripts in programs/
 for f in programs/*.sh; do bash "$f" -H; done

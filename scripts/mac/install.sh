@@ -33,6 +33,7 @@ brewInstall android-studio --cask
 brewInstall discord --cask
 brewInstall docker --cask
 brewInstall nvm
+brewInstall raspberry-pi-imager --cask
 brewInstall rectangle --caskbr
 brewInstall visual-studio-code --cask
 brewInstall vlc --cask
