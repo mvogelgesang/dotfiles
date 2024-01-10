@@ -30,6 +30,7 @@ printSection Homebrew
 brew update
 
 brewInstall android-studio --cask
+brewInstall arc --cask
 brewInstall discord --cask
 brewInstall docker --cask
 brewInstall nvm
