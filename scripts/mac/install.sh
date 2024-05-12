@@ -34,6 +34,7 @@ brewInstall arc --cask
 brewInstall discord --cask
 brewInstall docker --cask
 brewInstall nvm
+brewInstall pyenv
 brewInstall raspberry-pi-imager --cask
 brewInstall rectangle --caskbr
 brewInstall visual-studio-code --cask
