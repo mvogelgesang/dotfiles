@@ -29,6 +29,7 @@ printSection Homebrew
 
 brew update
 
+brewInstall 1password-cli
 brewInstall android-studio --cask
 brewInstall arc --cask
 brewInstall discord --cask
