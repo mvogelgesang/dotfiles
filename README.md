@@ -1,90 +1,269 @@
-# Dotfiles
+# dotfiles
 
-This was originally forked from Victoria Drake's [dotfiles](https://github.com/victoriadrake/dotfiles) repo.
+Personal configuration files for macOS and Linux. Uses symlinks so the repo
+is always in sync with what's live on disk — edit in one place, commit, done.
 
-## Linux
+> **Legacy note:** This repo originally ran on Pop!\_OS (forked from
+> [victoriadrake/dotfiles](https://github.com/victoriadrake/dotfiles)). Linux
+> scripts are preserved in `scripts/linux/` for reference but are no longer
+> the primary focus.
 
-My preferred starting configuration. Currently using [Pop!_OS 20.10](https://pop.system76.com/).
+---
 
-The installation script (`scripts/install.sh`) will install a suggested serving of programs and applications using scripts in the `scripts/programs/` directory. Please verify that you want these before running the script.
+## Repository layout
 
-Add or delete programs in `scripts/install.sh` and `scripts/programs/` to modify your installation.
-
-## Usage
-
-After installing your fresh OS, [create any SSH keys](https://docs.github.com/en/github-ae@latest/github/authenticating-to-github/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent) you need to access GitHub.
-
-If not generating new keys, place the ones you need in `.ssh/`. Remember to run `ssh-add` as well as `chmod 600 <key_name>`. Then clone this repository:
-
-```sh
-git clone git@github.com:mvogelgesang/dotfiles.git
-
-# Or use HTTPS
-git clone https://github.com/mvogelgesang/dotfiles.git
+```
+dotfiles/
+├── claude/
+│   ├── settings.json          # Claude Code user preferences & permissions
+│   └── skills/                # Personal Claude Code skills (slash commands)
+│       └── sync-gdoc/
+│           └── SKILL.md
+├── mac/
+│   ├── .zshrc                 # macOS shell config (oh-my-zsh + starship)
+│   └── Brewfile               # Homebrew packages (brew bundle)
+├── shared/
+│   ├── .gitconfig             # Git identity & aliases
+│   ├── .gitignore             # Global gitignore
+│   └── .gitmessage            # Commit message template
+├── scripts/                   # Legacy Linux setup scripts (reference only)
+│   └── linux/
+├── .gitignore                 # Repo-level ignores (secrets, runtime files)
+├── install.sh                 # Bootstrap script — symlinks everything into place
+└── README.md
 ```
 
-You may optionally like to pass the `--depth` argument to clone only a few of the [most recent commits](https://github.com/mvogelgesang/dotfiles/commits/master).
+---
 
-Close Firefox if it's open, then run the installation script.
+## What is and isn't tracked
 
-```sh
-cd dotfiles/scripts/
-./install.sh
+| Tracked ✅ | Not tracked ❌ |
+|-----------|--------------|
+| `claude/settings.json` | `claude/history.jsonl` (private conversations) |
+| `claude/skills/` | `claude/plugins/` (auto-managed cache) |
+| `mac/.zshrc` | `claude/certs/` (private key material) |
+| `shared/.gitconfig` | `*.local` files (machine-specific overrides) |
+| `mac/Brewfile` | SSH keys, `.env` files, tokens |
+
+**Rule of thumb:** if a file contains a secret, a session, a cache, or a
+machine-specific value that differs between machines — don't track it.
+
+---
+
+## Bootstrap order (new machine)
+
+Do these steps **in order**. Each step unblocks the next.
+
+### 1. Generate SSH keys
+
+```bash
+mkdir -p ~/.ssh && cd ~/.ssh
+ssh-keygen -t ed25519 -C "your@email.com"
+cat ~/.ssh/id_ed25519.pub | pbcopy   # macOS — copies public key to clipboard
 ```
 
+Add the public key to [GitHub](https://github.com/settings/keys) before
+proceeding. Without this, the git clone in step 2 will fail over SSH.
 
+### 2. Clone the repo
 
-Uncomment the relevant lines in `.bashrc`, then restart your terminal to see changes, or run:
+```bash
+# SSH (preferred — requires step 1 to be done first)
+git clone git@github.com:mvogelgesang/dotfiles.git ~/dotfiles
 
-```sh
-cd ~
-source .bashrc
+# HTTPS fallback (if SSH keys aren't set up yet)
+git clone https://github.com/mvogelgesang/dotfiles.git ~/dotfiles
 ```
 
-## Random Helpful Stuff (TM)
+### 3. Run the install script
 
-### Clone all your remote repositories
+```bash
+cd ~/dotfiles
 
-Given a list of repository URLs, `gh-repos.txt`, run:
+# Preview what will happen without making changes
+bash install.sh --dry-run
 
-```sh
-xargs -n1 git clone < gh-repos.txt
+# Apply
+bash install.sh
 ```
 
-Use the `firewood` Bash alias (see `.bashrc`) to collect remote branches.
+The script symlinks tracked files to the locations tools expect. It will warn
+(and skip) if something already exists at the target — it never silently
+overwrites.
 
-See [How to write Bash one-liners for cloning and managing GitHub and GitLab repositories](https://victoria.dev/blog/how-to-write-bash-one-liners-for-cloning-and-managing-github-and-gitlab-repositories/) for more.
+### 4. Handle pre-existing files
 
-### Saving and loading configuration settings
+If the script warns that a file already exists (e.g. `~/.claude/settings.json`
+was created before you cloned dotfiles), back it up and re-run:
 
-Optionally, load `settings.dconf` with:
-
-```sh
-dconf load /org/gnome/ < .config/dconf/settings.dconf
+```bash
+mv ~/.claude/settings.json ~/.claude/settings.json.bak
+bash install.sh
+# Review the .bak against the tracked version and merge any differences
 ```
 
-Back up new settings with:
+### 5. Machine-local overrides
 
-```sh
-dconf dump /org/gnoe/ > .config/dconf/settings.dconf
+Some config can't be the same on every machine (work email vs personal email,
+internal hostnames, etc.). Use `.local` files — they are gitignored by default.
+
+**Git identity example** — `shared/.gitconfig` sets defaults; create
+`~/.gitconfig.local` for overrides:
+
+```ini
+# ~/.gitconfig.local  (gitignored — never committed)
+[user]
+    email = work-email@company.com
+    signingkey = <work gpg key>
 ```
 
-Run `man dconf` on your machine for more.
+Then in `shared/.gitconfig`, include it at the bottom:
 
-## Your personal CLI tool Makefile
+```ini
+[include]
+    path = ~/.gitconfig.local
+```
 
-See the Makefile in this repository for some helpful command aliases. Read about [self-documenting Makefiles on my blog](https://victoria.dev/blog/how-to-create-a-self-documenting-makefile/).
+**Shell example** — add `~/.zshrc.local` for machine-specific exports and
+source it at the bottom of `mac/.zshrc`:
 
-## Recommended additions
+```zsh
+# at the bottom of mac/.zshrc
+[[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
+```
 
-- GNOME Tweaks
-- [Emoji Selector](https://extensions.gnome.org/extension/1162/emoji-selector/) ❤️✨🦄
-- [Clipboard Indicator](https://extensions.gnome.org/extension/779/clipboard-indicator/)
+---
 
-## Mac
+## Adding new dotfiles
 
-The [Mac setup web development](https://www.robinwieruch.de/mac-setup-web-development/) guide from Robin Wieruch provided the foundation for these scripts.
+### Add a new config file
 
-### Manual Actions
+1. Copy the file into the appropriate directory in this repo:
+   ```bash
+   cp ~/.config/starship.toml ~/dotfiles/shared/starship.toml
+   ```
 
-### Scripted Actions
+2. Add a `link` line to `install.sh` in the relevant section:
+   ```bash
+   link "shared/starship.toml" "$HOME/.config/starship.toml"
+   ```
+
+3. Remove the original (it will be replaced by the symlink):
+   ```bash
+   rm ~/.config/starship.toml
+   bash install.sh   # creates the symlink
+   ```
+
+4. Verify the symlink:
+   ```bash
+   ls -la ~/.config/starship.toml
+   # → ~/.config/starship.toml → /Users/you/dotfiles/shared/starship.toml
+   ```
+
+5. Commit:
+   ```bash
+   cd ~/dotfiles && git add -A && git commit -m "chore: add starship config"
+   git push
+   ```
+
+### Add a new Claude Code skill
+
+1. Create the skill directory and file:
+   ```bash
+   mkdir -p ~/dotfiles/claude/skills/<skill-name>
+   # write ~/dotfiles/claude/skills/<skill-name>/SKILL.md
+   ```
+
+2. The `claude/skills` directory is already symlinked to `~/.claude/skills` —
+   the new skill is immediately available without re-running `install.sh`.
+
+3. Commit:
+   ```bash
+   cd ~/dotfiles
+   git add claude/skills/<skill-name>
+   git commit -m "feat(skills): add <skill-name>"
+   git push
+   ```
+
+### Add a Homebrew package
+
+```bash
+brew install <package>
+cd ~/dotfiles && brew bundle dump --file mac/Brewfile --force
+git add mac/Brewfile && git commit -m "chore(brew): add <package>"
+git push
+```
+
+---
+
+## Day-to-day workflow
+
+Because everything is symlinked, you edit config files in their normal
+locations (`~/.zshrc`, `~/.claude/settings.json`, etc.) and the changes are
+automatically reflected in `~/dotfiles`. Just commit and push:
+
+```bash
+cd ~/dotfiles
+git add -A
+git commit -m "chore: <describe the change>"
+git push
+```
+
+On another machine:
+```bash
+cd ~/dotfiles && git pull
+# Symlinks mean changes take effect immediately
+# If new files were added to install.sh, re-run it:
+bash install.sh
+```
+
+---
+
+## Pitfalls
+
+### App overwrites the symlink
+Some apps write settings by creating a temp file and renaming it over the
+original, which **replaces the symlink with a real file**. Claude Code's
+`settings.json` can do this.
+
+**Detection:**
+```bash
+ls -la ~/.claude/settings.json
+# Should show: → /Users/you/dotfiles/claude/settings.json
+# If it shows a file size instead, the symlink was broken
+```
+
+**Fix:**
+```bash
+cp ~/.claude/settings.json ~/dotfiles/claude/settings.json   # save any new changes
+rm ~/.claude/settings.json
+bash ~/dotfiles/install.sh                                    # re-create symlink
+```
+
+### Secrets in config files
+Always audit files before the first commit and after adding new tools:
+```bash
+cd ~/dotfiles
+grep -r "token\|secret\|password\|key" --include="*.json" --include="*.toml" --include="*.ini" -l
+```
+
+### Merge conflicts in settings.json
+If Claude Code writes to `settings.json` on two machines before you push/pull,
+you'll get a JSON merge conflict. Resolve manually. Avoid this by pulling
+before starting a session and pushing when done.
+
+### The bootstrap problem
+You need SSH keys to clone the repo, but the repo contains your SSH config.
+Always generate SSH keys first (step 1 above) before cloning. Document the
+passphrase in your password manager.
+
+---
+
+## Cron jobs (Claude Code scheduler)
+
+Claude Code scheduled tasks live in `.claude/scheduled_tasks.json` inside each
+workspace — not in this dotfiles repo. They are workspace-specific and
+auto-expire after 7 days.
+
+Active jobs are documented in the
+[notebook meta/patterns.md](https://github.com/mvogelgesang/notebook/blob/main/meta/patterns.md).

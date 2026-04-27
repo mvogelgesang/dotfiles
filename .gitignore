@@ -1,1 +1,34 @@
-*
+# ── OS ──────────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ── Secrets — never commit these ────────────────────────────────────────────
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa*
+id_ed25519*
+id_ecdsa*
+.env
+.env.*
+*_token
+*_secret
+
+# ── Claude Code — runtime / ephemeral ───────────────────────────────────────
+claude/backups/
+claude/cache/
+claude/certs/
+claude/downloads/
+claude/history.jsonl
+claude/ide/
+claude/plugins/
+claude/projects/
+claude/session-env/
+claude/sessions/
+claude/shell-snapshots/
+claude/settings.json.lock
+
+# ── Machine-local overrides (present on disk, never committed) ───────────────
+*.local
+*.local.*
